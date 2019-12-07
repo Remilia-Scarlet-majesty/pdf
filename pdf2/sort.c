@@ -2,11 +2,12 @@
 #include<process.h>
 #include<conio.h>
 #include<string.h>
+#include<stdlib.h>
 #include"cal.c"
 #include"def.h"
 void sort()
 {
-	int x,i,t,j,m,n;
+	int i,t,j,m,n;
 	FILE*hp;
 	if ((hp=fopen("calt.txt","r"))==NULL)
 		{
@@ -31,35 +32,40 @@ void sort()
 	fclose(hp);
 	printf("input the no of tag you want to sort.\n");
 	scanf("%d",&n);
+	//print tags
+	
+int d;
+	struct pdf *tem;
 	FILE*fp;
+	d=readnum();
 	if ((fp=fopen("info.csv","r"))==NULL)
 		{
-			printf("cannot open this file .\n");
+			printf("cannot open info.csv .\n");
 			exit(0);
-		}	
-	x=readnum();
-    struct pdf tem[x];
-	for(i=0;i<x;i++)
-	{
-		fscanf(fp,"%s   %d    %d,%d,",tem[i].name,&tem[i].pageall,&tem[i].read,&tem[i].lin);
-		fscanf(fp,"%s\n",tem[i].line[0]);
-		//strcat(tem[i].line[0],"\n");
-				if(!strcmp(tem[i].line[0],arr[n-1]))
+		}
+		//else printf("Open.Done.\n");
+	tem=malloc(d*sizeof(struct pdf));
+	for(i=0;i<d;i++)
+		{
+			fscanf(fp,"%s ,%d,%d,%d,",tem[i].name,&tem[i].pageall,&tem[i].read,&tem[i].lin);
+			if(tem[i].lin==0)
+				fseek(fp,1L,SEEK_CUR);
+			for(j=0;j<tem[i].lin;j++)
 				{
-					printf("%s\n",tem[i].name);
+					//avoid to input the ","
+					fscanf(fp,"%s",tem[i].line[j]);
+					if(!strcmp(tem[i].line[j],arr[n-1]))
+					{
+						printf("%s\n",tem[i].name);
+					}
+					fseek(fp,1L,SEEK_CUR);
+					fseek(fp,1L,SEEK_CUR);
 				}
-		for(j=1;j<tem[i].lin;j++)
-			{
-				fscanf(fp,",,%s\n",tem[i].line[j]);
-				//strcat(tem[i].line[j],"\n");
-				if(!strcmp(tem[i].line[j],arr[n-1]))
-				{
-					printf("%s\n",tem[i].name);
+				if(tem[i].lin!=0){
+					fseek(fp,1L,SEEK_CUR);
+					fseek(fp,1L,SEEK_CUR);
 				}
-			}
-	fscanf(fp,",,\n");
-}
-	fclose(fp);
-
+		}
+		fclose(fp);
 }
 

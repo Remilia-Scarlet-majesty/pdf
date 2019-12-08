@@ -6,8 +6,7 @@
 #include"def.h"
 int deltag()
 {	int d,i,j,ii,DeBook,DeTag;
-	char DeBooks[100],DeTags[100],NDeTags[100],rubbish[20],dou[5];
-	strcpy(dou,",,");
+	char DeBooks[100],DeTags[100],NDeTags[100];
 	struct pdf *tem;
 	FILE*fp;
 	d=readnum();
@@ -19,23 +18,24 @@ int deltag()
 		//else printf("Open.Done.\n");
 	tem=malloc(d*sizeof(struct pdf));
 	for(i=0;i<d;i++)
-	{
-		fscanf(fp,"%s   %d    %d,%d,",tem[i].name,&tem[i].pageall,&tem[i].read,&tem[i].lin);
+		{
+			fscanf(fp,"%s ,%d,%d,%d,",tem[i].name,&tem[i].pageall,&tem[i].read,&tem[i].lin);
+			if(tem[i].lin==0)
+				fseek(fp,1L,SEEK_CUR);
+			for(j=0;j<tem[i].lin;j++)
+				{
+					//avoid to input the ","
+					fscanf(fp,"%s",tem[i].line[j]);
+					fseek(fp,1L,SEEK_CUR);
+					fseek(fp,1L,SEEK_CUR);
+				}
+				if(tem[i].lin!=0){
+					fseek(fp,1L,SEEK_CUR);
+					fseek(fp,1L,SEEK_CUR);
+				}
+		}
+		
 	
-		for(j=0;j<tem[i].lin;j++)
-		{	if(j==0)
-			{
-				fgets(rubbish,1,fp);//avoid to input the ","
-				fgets(tem[i].line[j],100,fp);
-			}
-			else
-			{
-				fgets(rubbish,3,fp);//avoid to input the ","
-				fgets(tem[i].line[j],100,fp);
-			}
-	}
-		fgets(rubbish,18,fp);
-	}
 	fclose(fp);
 //	printf("Input data.Done.\n"); debug expression
 	printf("Book List:\n");
@@ -61,30 +61,23 @@ int deltag()
 	{	if(i!=DeBook)
 		{
 			
-			fprintf(hp,"%s   %d    %d,%d,",tem[i].name,tem[i].pageall,tem[i].read,tem[i].lin);
+			fprintf(hp,"%s ,%d,%d,%d,",tem[i].name,tem[i].pageall,tem[i].read,tem[i].lin);
 			for(j=0;j<tem[i].lin;j++)
 			{
-				if(j==0)
-				fprintf(fp,"%s",tem[i].line[j]);
-				else
-				fprintf(fp,",,%s",tem[i].line[j]);
+				fprintf(hp,"%s ,",tem[i].line[j]);
 			}
-			fprintf(hp,"%s\n",dou);
 			//adjust to the initial format//adjust to the initial format
+		fprintf(hp,"\n");
 		}
 		else
 		{	tem[i].lin--;
-			fprintf(hp,"%s   %d    %d,%d,",tem[i].name,tem[i].pageall,tem[i].read,tem[i].lin);
-			for(j=0,ii=0;j<tem[i].lin+1;j++)
+			fprintf(hp,"%s ,%d,%d,%d,",tem[i].name,tem[i].pageall,tem[i].read,tem[i].lin);
+			for(j=0;j<tem[i].lin+1;j++)
 			if (j!=DeTag)
 			{
-				if(ii==0)
-				fprintf(fp,"%s",tem[i].line[j]);
-				else
-				fprintf(fp,",,%s",tem[i].line[j]);
-				ii++;
+				fprintf(hp,"%s ,",tem[i].line[j]);
 			}
-			fprintf(hp,"%s\n",dou);
+			fprintf(hp,"\n");
 			//adjust to the initial format//adjust to the initial format
 			}	
 		

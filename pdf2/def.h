@@ -7,6 +7,8 @@ struct pdf
 		int pageall,read;
 		char line[100][100];
 		int lin;
+		int star;
+		char cat[100];
 	};
 #endif
 

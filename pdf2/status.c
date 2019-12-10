@@ -1,21 +1,21 @@
 #include<stdio.h>
 #include<process.h>
+#include<string.h>
 #include<stdlib.h>
-#include"cal.c"
 #include"def.h"
-void printbook()
-{
-	int i,j,d;
+#include"cal.c"
+void status()
+{	int i,d,j;
 	struct pdf *tem;
-	FILE*fp;
 	d=readnum();
-	if ((fp=fopen("info.csv","r"))==NULL)
-		{
-			printf("cannot open info.csv .\n");
-			exit(0);
-		}
-		//else printf("Open.Done.\n");
 	tem=malloc(d*sizeof(struct pdf));
+	FILE*fp;
+
+	if ((fp=fopen("info.csv","r"))==NULL)
+	{
+		printf("Cannot open info file.\n");
+		exit(0);
+	}
 	for(i=0;i<d;i++)
 		{
 			fscanf(fp,"%s ,%d,%d,%d,%d,%s",tem[i].name,&tem[i].pageall,&tem[i].read,&tem[i].star,&tem[i].lin,tem[i].cat);
@@ -34,9 +34,25 @@ void printbook()
 					fseek(fp,1L,SEEK_CUR);
 				}
 		}
-	fclose(fp);
-//	printf("Input data.Done.\n"); debug expression
-	printf("Book List:\n");
+	printf("Finish book list:\n");
 	for(i=0;i<d;i++)
-	printf("%dth %s   Page:%d   Finish:%d   TagNumbers:%d\n",i+1,tem[i].name,tem[i].pageall,tem[i].read,tem[i].lin);
-}
+	{
+		if (tem[i].read==tem[i].pageall)
+		puts(tem[i].name);
+	}
+	printf("Unfinish book list:\n");
+	for(i=0;i<d;i++)
+	{
+		if(tem[i].read<tem[i].pageall&&tem[i].read!=0)
+		puts(tem[i].name);
+	}
+	printf("Unread book list:\n");
+	for(i=0;i<d;i++)
+	{
+		if(tem[i].read==0)
+		puts(tem[i].name);
+	}
+	free(tem);
+	fclose(fp);
+ } 
+
